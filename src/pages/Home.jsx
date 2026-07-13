@@ -22,7 +22,7 @@ export default function Home() {
       <section>
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-heading font-bold text-gray-900">Today's Best Deals For You!</h2>
-          <Link to="/shop?sale=true" className="text-sm font-medium text-primary hover:underline">
+          <Link to="/shop" className="text-sm font-medium text-primary hover:underline">
             View All &gt;
           </Link>
         </div>
@@ -59,7 +59,7 @@ export default function Home() {
       <section>
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl font-heading font-bold text-gray-900">Trending Products</h2>
-          <Link to="/shop?sort=trending" className="text-sm font-medium text-primary hover:underline">
+          <Link to="/shop" className="text-sm font-medium text-primary hover:underline">
             View All &gt;
           </Link>
         </div>
