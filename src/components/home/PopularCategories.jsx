@@ -9,7 +9,7 @@ export default function PopularCategories() {
     <section className="py-12">
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-2xl font-heading font-bold text-gray-900">Explore Popular Categories</h2>
-        <Link to="/shop" className="text-sm font-medium text-primary hover:underline">
+        <Link to="/categories" className="text-sm font-medium text-primary hover:underline">
           View All &gt;
         </Link>
       </div>
