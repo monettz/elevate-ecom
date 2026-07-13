@@ -22,9 +22,27 @@ export default function Checkout() {
   
   const total = Math.max(0, subtotal - discount);
 
-  const { user, isSignedIn } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  if (!isLoaded) {
+    return <div className="max-w-7xl mx-auto px-4 py-20 text-center">Loading...</div>;
+  }
+
+  if (isLoaded && !isSignedIn) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+        <div className="w-24 h-24 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+          🔒
+        </div>
+        <h2 className="text-3xl font-heading font-bold mb-4">Authentication Required</h2>
+        <p className="text-gray-600 mb-8 max-w-md mx-auto">You must create an account or sign in to place an order and track its status.</p>
+        <button onClick={() => navigate('/login')} className="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition">
+          Sign In / Register
+        </button>
+      </div>
+    );
+  }
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
