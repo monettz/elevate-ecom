@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogOut, Package, User, MapPin, CreditCard, ChevronRight, Truck, CheckCircle, Clock } from 'lucide-react';
-import { useUser, useAuth } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 
 export default function Profile() {
-  const { user, isLoaded, isSignedIn } = useUser();
-  const { signOut } = useAuth();
+  const { user, isLoaded, isSignedIn, signOut } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('orders');
 
@@ -27,13 +26,13 @@ export default function Profile() {
   const [isLoadingOrders, setIsLoadingOrders] = useState(true);
 
   // Profile editing state
-  const [firstName, setFirstName] = useState(user.firstName || '');
-  const [lastName, setLastName] = useState(user.lastName || '');
+  const [firstName, setFirstName] = useState(user?.user_metadata?.first_name || '');
+  const [lastName, setLastName] = useState(user?.user_metadata?.last_name || '');
   const [isSavingPersonal, setIsSavingPersonal] = useState(false);
   const [personalMsg, setPersonalMsg] = useState('');
 
   // Address editing state
-  const [address, setAddress] = useState(user.unsafeMetadata?.address || '');
+  const [address, setAddress] = useState(user?.user_metadata?.address || '');
   const [isSavingAddress, setIsSavingAddress] = useState(false);
   const [addressMsg, setAddressMsg] = useState('');
 
@@ -41,7 +40,10 @@ export default function Profile() {
     setIsSavingPersonal(true);
     setPersonalMsg('');
     try {
-      await user.update({ firstName, lastName });
+      const { error } = await supabase.auth.updateUser({
+        data: { first_name: firstName, last_name: lastName }
+      });
+      if (error) throw error;
       setPersonalMsg('Information updated successfully!');
     } catch (e) {
       setPersonalMsg('Error updating information.');
@@ -53,7 +55,10 @@ export default function Profile() {
     setIsSavingAddress(true);
     setAddressMsg('');
     try {
-      await user.update({ unsafeMetadata: { ...user.unsafeMetadata, address } });
+      const { error } = await supabase.auth.updateUser({
+        data: { address }
+      });
+      if (error) throw error;
       setAddressMsg('Address updated successfully!');
     } catch (e) {
       setAddressMsg('Error updating address.');
@@ -110,11 +115,11 @@ export default function Profile() {
           <div className="bg-white rounded-2xl border border-border p-6 shadow-sm sticky top-24">
             <div className="flex items-center gap-4 mb-8 pb-8 border-b border-gray-100">
               <div className="w-16 h-16 bg-primary text-white rounded-full overflow-hidden flex items-center justify-center text-2xl font-bold">
-                {user.imageUrl ? <img src={user.imageUrl} alt="Profile" /> : (user.firstName ? user.firstName.charAt(0) : 'U')}
+                {user?.user_metadata?.avatar_url ? <img src={user.user_metadata.avatar_url} alt="Profile" /> : (user?.user_metadata?.first_name ? user.user_metadata.first_name.charAt(0) : 'U')}
               </div>
               <div>
-                <h3 className="font-bold text-gray-900 line-clamp-1">{user.firstName} {user.lastName}</h3>
-                <p className="text-sm text-gray-500 line-clamp-1">{user.primaryEmailAddress?.emailAddress}</p>
+                <h3 className="font-bold text-gray-900 line-clamp-1">{user?.user_metadata?.first_name} {user?.user_metadata?.last_name}</h3>
+                <p className="text-sm text-gray-500 line-clamp-1">{user?.email}</p>
               </div>
             </div>
 
@@ -171,7 +176,7 @@ export default function Profile() {
                 </div>
                 <div className="sm:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                  <input type="email" readOnly value={user.primaryEmailAddress?.emailAddress || ''} className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none text-gray-500" />
+                  <input type="email" readOnly value={user?.email || ''} className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none text-gray-500" />
                   <p className="text-xs text-gray-500 mt-1">Email cannot be changed directly here for security reasons.</p>
                 </div>
               </div>

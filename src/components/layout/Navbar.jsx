@@ -4,7 +4,7 @@ import { Search, ShoppingCart, Heart, User, Menu, X, Globe, ChevronDown, Phone }
 import { useCartStore, useWishlistStore } from '../../store/useStore';
 import { useDataStore } from '../../store/useDataStore';
 import { Logo } from '../ui/Logo';
-import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -15,7 +15,7 @@ export default function Navbar() {
   const cartCount = useCartStore((state) => state.cart.reduce((total, item) => total + item.quantity, 0));
   const wishlistCount = useWishlistStore((state) => state.wishlist.length);
   const { categories, products } = useDataStore();
-  const { user } = useUser();
+  const { user, isSignedIn } = useAuth();
 
   const searchResults = searchQuery.trim() 
     ? (products || []).filter(p => 
@@ -114,20 +114,19 @@ export default function Navbar() {
         <div className="flex items-center space-x-6 text-gray-700">
           <button onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)} className="md:hidden hover:text-primary transition"><Search size={24} /></button>
           <div className="hidden md:flex items-center justify-center">
-            <SignedIn>
+            {isSignedIn ? (
               <Link to="/profile" className="flex flex-col items-center hover:text-primary transition">
                 <div className="w-6 h-6 bg-primary text-white rounded-full overflow-hidden flex items-center justify-center text-xs font-bold shadow-sm">
-                  {user?.imageUrl ? <img src={user.imageUrl} alt="Profile" /> : (user?.firstName ? user.firstName.charAt(0) : 'U')}
+                  {user?.user_metadata?.avatar_url ? <img src={user.user_metadata.avatar_url} alt="Profile" /> : (user?.user_metadata?.first_name ? user.user_metadata.first_name.charAt(0) : 'U')}
                 </div>
                 <span className="text-xs font-medium mt-1">Profile</span>
               </Link>
-            </SignedIn>
-            <SignedOut>
+            ) : (
               <Link to="/login" className="flex flex-col items-center hover:text-primary transition">
                 <User size={24} />
                 <span className="text-xs font-medium mt-1">Sign In</span>
               </Link>
-            </SignedOut>
+            )}
           </div>
           
           <Link to="/wishlist" className="relative flex flex-col items-center hover:text-primary transition">
@@ -238,10 +237,10 @@ export default function Navbar() {
           {user ? (
             <Link to="/profile" className="flex items-center space-x-3 text-gray-700 font-medium pb-4 border-b border-gray-100" onClick={() => setIsMobileMenuOpen(false)}>
               <div className="w-10 h-10 bg-primary text-white rounded-full overflow-hidden flex items-center justify-center text-lg font-bold shadow-sm">
-                {user.imageUrl ? <img src={user.imageUrl} alt="Profile" /> : (user.firstName ? user.firstName.charAt(0) : 'U')}
+                {user?.user_metadata?.avatar_url ? <img src={user.user_metadata.avatar_url} alt="Profile" /> : (user?.user_metadata?.first_name ? user.user_metadata.first_name.charAt(0) : 'U')}
               </div>
               <div>
-                <div className="font-bold text-gray-900">{user.firstName} {user.lastName}</div>
+                <div className="font-bold text-gray-900">{user?.user_metadata?.first_name} {user?.user_metadata?.last_name}</div>
                 <div className="text-xs text-gray-500">View Profile</div>
               </div>
             </Link>

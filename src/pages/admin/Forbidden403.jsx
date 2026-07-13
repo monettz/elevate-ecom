@@ -1,9 +1,10 @@
 import { ShieldAlert } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '@clerk/clerk-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function Forbidden403() {
   const { signOut } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -26,7 +27,7 @@ export default function Forbidden403() {
             Return to Store
           </Link>
           <button
-            onClick={() => signOut({ redirectUrl: '/' })}
+            onClick={async () => { await signOut(); navigate('/'); }}
             className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition"
           >
             Sign Out

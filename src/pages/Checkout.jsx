@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/useStore';
 import { supabase } from '../lib/supabase';
-import { useUser } from '@clerk/clerk-react';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function Checkout() {
   
   const total = Math.max(0, subtotal - discount);
 
-  const { user, isSignedIn, isLoaded } = useUser();
+  const { user, isSignedIn, isLoaded } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isLoaded) {
@@ -51,24 +51,13 @@ export default function Checkout() {
       const formData = new FormData(e.target);
       const orderId = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
       
-      // Upsert customer if logged in
-      if (isSignedIn && user) {
-        await supabase.from('customers').upsert({
-          id: user.id,
-          name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-          email: user.primaryEmailAddress?.emailAddress,
-          avatar: user.imageUrl,
-          status: 'Active'
-        });
-      }
-
       // Insert Order
       const orderData = {
         id: orderId,
         customer_id: isSignedIn ? user.id : null,
         customer_name: `${formData.get('firstName')} ${formData.get('lastName')}`,
-        customer_email: isSignedIn ? user.primaryEmailAddress?.emailAddress : 'guest@example.com',
-        customer_avatar: isSignedIn ? user.imageUrl : null,
+        customer_email: isSignedIn ? user.email : 'guest@example.com',
+        customer_avatar: isSignedIn ? user.user_metadata?.avatar_url : null,
         total,
         status: 'Processing',
         address: `${formData.get('address')}, ${formData.get('city')}, ${formData.get('postalCode')}`,

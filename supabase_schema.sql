@@ -51,7 +51,8 @@ CREATE TABLE public.customers (
     avatar TEXT,
     status TEXT DEFAULT 'Active',
     total_orders INTEGER DEFAULT 0,
-    total_spent NUMERIC DEFAULT 0
+    total_spent NUMERIC DEFAULT 0,
+    role TEXT DEFAULT 'user'
 );
 
 -- 6. Orders

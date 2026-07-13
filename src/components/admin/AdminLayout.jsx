@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { UserButton } from '@clerk/clerk-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import { 
   LayoutDashboard, 
   Package, 
@@ -14,7 +15,8 @@ import {
   Settings, 
   Menu, 
   X,
-  Store
+  Store,
+  LogOut
 } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 import { Toaster } from 'react-hot-toast';
@@ -34,6 +36,8 @@ const sidebarNavigation = [
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -113,7 +117,10 @@ export default function AdminLayout() {
           </div>
           
           <div className="flex items-center gap-4">
-            <UserButton afterSignOutUrl="/admin/login" />
+            <button onClick={async () => { await signOut(); navigate('/admin/login'); }} className="text-gray-500 hover:text-red-500 flex items-center gap-2 text-sm font-medium transition">
+              <LogOut size={18} />
+              Sign Out
+            </button>
           </div>
         </header>
 

@@ -52,7 +52,7 @@ function App() {
     <Router>
       <Routes>
         {/* Admin Routes */}
-        <Route path="/admin/login/*" element={<AdminLogin />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/forbidden" element={<Forbidden403 />} />
         <Route path="/admin" element={<AdminProtectedRoute />}>
           <Route element={<AdminLayout />}>
@@ -71,8 +71,8 @@ function App() {
           </Route>
         </Route>
 
-        <Route path="/login/*" element={<Login />} />
-        <Route path="/register/*" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />

@@ -1,8 +1,8 @@
-import { useUser } from '@clerk/clerk-react';
 import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function AdminProtectedRoute() {
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isLoaded, isSignedIn, role } = useAuth();
 
   if (!isLoaded) {
     return (
@@ -16,10 +16,7 @@ export default function AdminProtectedRoute() {
     return <Navigate to="/admin/login" replace />;
   }
 
-  // Check role in Clerk public metadata
-  // Requires {"role": "admin"} or {"role": "super_admin"} in public metadata
-  const role = user?.publicMetadata?.role;
-  
+  // Check role from AuthContext (which fetches from customers table)
   if (role !== 'admin' && role !== 'super_admin') {
     return <Navigate to="/admin/forbidden" replace />;
   }
