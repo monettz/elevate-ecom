@@ -85,6 +85,8 @@ export default function Hero() {
                 <img 
                   src={slide.image} 
                   alt={slide.title || 'Banner'}
+                  fetchPriority="high"
+                  loading="eager"
                   className={`absolute inset-0 w-full h-full object-cover ${(slide.title || slide.discount) ? 'mix-blend-overlay opacity-80' : 'opacity-100'}`}
                 />
               </div>
