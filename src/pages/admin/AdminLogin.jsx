@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { supabase } from '../../lib/supabase';
 import { Logo } from '../../components/ui/Logo';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function AdminLogin() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [authError, setAuthError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
@@ -45,57 +47,100 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2029&auto=format&fit=crop')] bg-cover bg-center opacity-10"></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"></div>
-      
-      <div className="relative z-10 text-center mb-8">
-        <div className="bg-white p-4 rounded-xl shadow-lg inline-block mb-4">
-          <Logo className="scale-125" />
+    <div className="min-h-screen bg-[#F4F2F0] flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full bg-white rounded-[2rem] shadow-sm overflow-hidden p-8 sm:p-10">
+        
+        {/* Header Section */}
+        <div className="mb-10 text-center">
+          <div className="inline-block mb-8">
+            <Logo className="scale-125" />
+          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2 font-heading tracking-tight">Admin Portal</h2>
+          <p className="text-gray-500 text-sm">Enter your admin credentials</p>
         </div>
-        <h2 className="text-2xl font-bold text-white tracking-tight">Admin Portal</h2>
-        <p className="text-gray-400 mt-2 text-sm max-w-sm">
-          Sign in with your authorized admin account to access the dashboard.
-        </p>
-      </div>
-
-      <div className="relative z-10 w-full max-w-md bg-white p-8 shadow-2xl rounded-2xl overflow-hidden ring-1 ring-white/10">
+        
         {authError && (
-          <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm mb-6 text-center border border-red-100">
+          <div className="bg-red-50 text-red-500 p-3 rounded-xl text-sm mb-6 text-center">
             {authError}
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/* Social Buttons */}
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <button type="button" className="flex items-center justify-center gap-2 py-3 px-4 border border-gray-200 rounded-2xl hover:bg-gray-50 transition-colors text-sm font-semibold text-gray-700">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Google
+          </button>
+          <button type="button" className="flex items-center justify-center gap-2 py-3 px-4 border border-gray-200 rounded-2xl hover:bg-gray-50 transition-colors text-sm font-semibold text-gray-700">
+            <svg viewBox="0 0 384 512" width="18" height="18"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.1-44.6-35.9-2.8-74.3 22.7-93.1 22.7-18.9 0-46.5-20.9-82.8-20.9-52.5 0-102 35.3-131 80.1-59 90.7-33 216 19.3 293 25.4 37 54.7 75.6 96 73.8 39.1-1.8 55.4-25.5 101.4-25.5 45.6 0 59.9 25.5 102.3 24.3 43.6-1.2 68.7-36.4 93.3-72.9 29.8-44 42.4-86.8 43.1-89-1-1.3-43.1-15.6-43.5-56.1zM263.6 86.8c21.6-26.3 36.2-62.8 32.3-99.3-31 1.2-68.9 20.8-91.1 47.7-19.3 23-35.9 60.1-31.5 95.8 34.6 2.7 69.1-18.6 90.3-44.2z" fill="#000000"/></svg>
+            Apple
+          </button>
+        </div>
+
+        {/* Divider */}
+        <div className="relative mb-8">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-4 bg-white text-gray-500">Or</span>
+          </div>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Admin Email</label>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Admin Email</label>
             <input 
               type="email" 
+              placeholder="Admin Email"
               {...register('email', { required: 'Email is required' })} 
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none"
+              className="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm placeholder-gray-400 bg-transparent"
             />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+            {errors.email && <p className="text-red-500 text-xs mt-1 ml-1">{errors.email.message}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input 
-              type="password" 
-              {...register('password', { required: 'Password is required' })} 
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary outline-none"
-            />
-            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Password</label>
+            <div className="relative">
+              <input 
+                type={showPassword ? "text" : "password"} 
+                placeholder="Password"
+                {...register('password', { required: 'Password is required' })} 
+                className="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm placeholder-gray-400 bg-transparent pr-12"
+              />
+              <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+              >
+                {showPassword ? <Eye size={20} strokeWidth={1.5} /> : <EyeOff size={20} strokeWidth={1.5} />}
+              </button>
+            </div>
+            {errors.password && <p className="text-red-500 text-xs mt-1 ml-1">{errors.password.message}</p>}
+          </div>
+
+          <div className="flex items-center mt-4">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary accent-primary" />
+              <span className="text-sm text-gray-700 font-medium">Remember me</span>
+            </label>
           </div>
 
           <button 
             type="submit" 
             disabled={isLoading}
-            className="w-full bg-gray-900 text-white font-bold py-3 px-4 rounded-lg hover:bg-black transition disabled:opacity-50 mt-4"
+            className="w-full bg-[#8B5CF6] text-white font-semibold py-4 px-4 rounded-2xl hover:bg-[#7C3AED] transition-all disabled:opacity-70 mt-6 shadow-sm shadow-[#8B5CF6]/30"
           >
             {isLoading ? 'Authenticating...' : 'Sign In to Dashboard'}
           </button>
         </form>
+
+        <p className="mt-8 text-center text-sm text-gray-600 font-medium">
+          <Link to="/" className="text-[#8B5CF6] hover:text-[#7C3AED] hover:underline">
+            &larr; Return to Store
+          </Link>
+        </p>
       </div>
     </div>
   );
