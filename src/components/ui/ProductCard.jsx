@@ -25,19 +25,19 @@ export default function ProductCard({ product }) {
 
   return (
     <motion.div 
-      whileHover={{ y: -5 }}
-      className="bg-card rounded-2xl p-4 border border-border shadow-sm hover:shadow-lg transition-all duration-300 group"
+      whileHover={{ y: -3 }}
+      className="bg-card rounded-2xl p-3 border border-border shadow-sm hover:shadow-md transition-all duration-300 group flex flex-col h-full"
     >
-      <Link to={`/product/${product.id}`} className="block relative">
+      <div className="relative flex-shrink-0">
         {/* Badges */}
-        <div className="absolute top-0 left-0 z-10 flex flex-col gap-2">
+        <div className="absolute top-2 left-2 z-10 flex flex-col gap-1.5">
           {product.badge && (
-            <span className="bg-secondary text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider">
+            <span className="bg-secondary text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shadow-sm">
               {product.badge}
             </span>
           )}
           {product.is_new && (
-            <span className="bg-emerald-500 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider">
+            <span className="bg-emerald-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shadow-sm">
               New
             </span>
           )}
@@ -46,13 +46,13 @@ export default function ProductCard({ product }) {
         {/* Wishlist Button */}
         <button 
           onClick={handleWishlistToggle}
-          className="absolute top-0 right-0 z-10 p-2 rounded-full bg-white shadow-sm text-gray-400 hover:text-red-500 transition-colors"
+          className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-white/90 backdrop-blur-sm shadow-sm text-gray-400 hover:text-red-500 transition-colors"
         >
-          <Heart size={18} fill={isWishlisted ? "currentColor" : "none"} className={isWishlisted ? "text-red-500" : ""} />
+          <Heart size={16} fill={isWishlisted ? "currentColor" : "none"} className={isWishlisted ? "text-red-500" : ""} />
         </button>
 
         {/* Image */}
-        <div className="relative aspect-square mb-4 overflow-hidden rounded-xl bg-gray-50 flex items-center justify-center">
+        <Link to={`/product/${product.id}`} className="block relative aspect-square mb-2.5 overflow-hidden rounded-xl bg-gray-50 flex items-center justify-center">
           <img 
             src={product.image} 
             alt={product.name} 
@@ -60,54 +60,60 @@ export default function ProductCard({ product }) {
           />
           
           {/* Quick View Overlay */}
-          <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <button className="bg-white text-gray-900 px-4 py-2 rounded-full font-medium text-sm flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-md">
-              <Eye size={16} /> Quick View
-            </button>
+          <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <div className="bg-white text-gray-900 px-3 py-1.5 rounded-full font-semibold text-xs flex items-center gap-1.5 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-md">
+              <Eye size={14} /> Quick View
+            </div>
           </div>
-        </div>
+        </Link>
+      </div>
 
-        {/* Product Info */}
-        <div className="space-y-2">
-          <div className="text-xs text-gray-500 mb-1">{product.category}</div>
+      {/* Product Info */}
+      <div className="flex flex-col flex-grow relative">
+        <Link to={`/product/${product.id}`} className="flex flex-col flex-grow">
+          <div className="text-[10px] text-gray-400 uppercase tracking-wider mb-0.5 font-medium">{product.category}</div>
           
-          <h3 className="font-medium text-gray-900 line-clamp-2 text-sm leading-tight h-10">
+          <h3 className="font-semibold text-gray-900 line-clamp-2 text-sm leading-tight mb-1">
             {product.name}
           </h3>
           
+          <div className="flex items-center gap-1 mb-1.5">
+            <div className="flex text-yellow-400">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} size={11} fill={i < Math.floor(product.rating || 0) ? "currentColor" : "none"} />
+              ))}
+            </div>
+            <span className="text-[10px] text-gray-500 font-medium">({product.reviews || 0})</span>
+          </div>
+          
           {product.description && (
-            <p className="text-xs text-gray-500 line-clamp-2 mt-1">
+            <p className="text-[11px] text-gray-500 line-clamp-1 mb-1">
               {product.description}
             </p>
           )}
+
+          {/* Spacer to push price down */}
+          <div className="flex-grow"></div>
           
-          <div className="flex items-center gap-1">
-            <div className="flex text-yellow-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={12} fill={i < Math.floor(product.rating) ? "currentColor" : "none"} />
-              ))}
-            </div>
-            <span className="text-xs text-gray-500">({product.reviews})</span>
-          </div>
-          
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex items-end justify-between pt-2 mt-1">
             <div className="flex flex-col">
-              <span className="font-bold text-lg text-gray-900">TZS {Number(product.price || 0).toFixed(2)}</span>
               {product.old_price && (
-                <span className="text-xs text-gray-400 line-through">TZS {Number(product.old_price).toFixed(2)}</span>
+                <span className="text-[10px] text-gray-400 line-through leading-none mb-0.5">TZS {Number(product.old_price).toFixed(2)}</span>
               )}
+              <span className="font-bold text-[15px] text-gray-900 leading-none tracking-tight">TZS {Number(product.price || 0).toFixed(2)}</span>
             </div>
-            
-            <button 
-              onClick={handleAddToCart}
-              className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-blue-700 transition-colors shadow-sm"
-              aria-label="Add to cart"
-            >
-              <ShoppingCart size={18} />
-            </button>
           </div>
-        </div>
-      </Link>
+        </Link>
+
+        {/* Floating Add to Cart Button */}
+        <button 
+          onClick={handleAddToCart}
+          className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center hover:bg-blue-700 hover:scale-105 active:scale-95 transition-all shadow-sm"
+          aria-label="Add to cart"
+        >
+          <ShoppingCart size={15} />
+        </button>
+      </div>
     </motion.div>
   );
 }
