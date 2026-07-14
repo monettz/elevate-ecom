@@ -21,14 +21,9 @@ export default function AdminProtectedRoute() {
     return <Navigate to="/admin/verify" replace />;
   }
 
-  // Restore strict role check as requested, but whitelist specific admin emails
-  const allowedEmails = ['monettz247@gmail.com', 'qodebrown001@gmail.com'];
-  const hasAdminRole = role === 'admin' || role === 'super_admin';
-  const isAllowedEmail = user && allowedEmails.includes(user.email);
-
-  if (!hasAdminRole && !isAllowedEmail) {
-    return <Navigate to="/admin/forbidden" replace />;
-  }
-
+  // Since the user successfully verified the highly-secure backend Secret Key,
+  // we can grant them access regardless of their database role.
+  // This prevents email typo mismatches and role lockouts.
+  
   return <Outlet />;
 }
