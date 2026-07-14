@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingCart, Heart, User, Menu, X, Globe, ChevronDown, Phone } from 'lucide-react';
 import { useCartStore, useWishlistStore } from '../../store/useStore';
@@ -10,12 +10,21 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   
   const cartCount = useCartStore((state) => state.cart.reduce((total, item) => total + item.quantity, 0));
   const wishlistCount = useWishlistStore((state) => state.wishlist.length);
   const { categories, products } = useDataStore();
   const { user, isSignedIn } = useAuth();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const searchResults = searchQuery.trim() 
     ? (products || []).filter(p => 
@@ -35,9 +44,13 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-border shadow-sm">
-      {/* Main Navbar */}
-      <div className="px-4 py-4 max-w-7xl mx-auto flex items-center justify-between">
+    <>
+      {/* Spacer to prevent layout shift when header becomes fixed */}
+      <div className="h-[73px] md:h-[125px] w-full shrink-0"></div>
+
+      <header className={`fixed top-0 left-0 right-0 z-[100] w-full bg-white transition-all duration-300 ${isScrolled ? 'shadow-md border-b border-gray-200' : 'border-b border-border shadow-sm'}`}>
+        {/* Main Navbar */}
+        <div className="px-4 py-4 max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-4">
           <button 
@@ -277,5 +290,6 @@ export default function Navbar() {
         </div>
       )}
     </header>
+    </>
   );
 }
