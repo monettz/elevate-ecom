@@ -2,7 +2,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function AdminProtectedRoute() {
-  const { isLoaded, isSignedIn, role, isSecretVerified } = useAuth();
+  const { isLoaded, isSignedIn, role, isSecretVerified, user } = useAuth();
 
   if (!isLoaded) {
     return (
@@ -21,8 +21,12 @@ export default function AdminProtectedRoute() {
     return <Navigate to="/admin/verify" replace />;
   }
 
-  // Restore strict role check as requested
-  if (role !== 'admin' && role !== 'super_admin') {
+  // Restore strict role check as requested, but whitelist specific admin emails
+  const allowedEmails = ['monettz247@gmail.com', 'qodebrown001@gmail.com'];
+  const hasAdminRole = role === 'admin' || role === 'super_admin';
+  const isAllowedEmail = user && allowedEmails.includes(user.email);
+
+  if (!hasAdminRole && !isAllowedEmail) {
     return <Navigate to="/admin/forbidden" replace />;
   }
 
