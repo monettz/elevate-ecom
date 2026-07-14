@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [role, setRole] = useState('user');
+  const [isSecretVerified, setIsSecretVerified] = useState(false);
 
   useEffect(() => {
     // Get initial session
@@ -55,7 +56,12 @@ export function AuthProvider({ children }) {
   };
 
   const signOut = async () => {
+    setIsSecretVerified(false);
     await supabase.auth.signOut();
+  };
+
+  const verifyAdminSecret = () => {
+    setIsSecretVerified(true);
   };
 
   const value = {
@@ -64,6 +70,8 @@ export function AuthProvider({ children }) {
     isLoaded,
     isSignedIn: !!user,
     role,
+    isSecretVerified,
+    verifyAdminSecret,
     signOut
   };
 

@@ -17,6 +17,7 @@ import Invoice from './pages/Invoice';
 import AdminProtectedRoute from './components/admin/AdminProtectedRoute';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
+import AdminVerify from './pages/admin/AdminVerify';
 import Forbidden403 from './pages/admin/Forbidden403';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
@@ -53,6 +54,7 @@ function App() {
       <Routes>
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/verify" element={<AdminVerify />} />
         <Route path="/admin/forbidden" element={<Forbidden403 />} />
         <Route path="/admin" element={<AdminProtectedRoute />}>
           <Route element={<AdminLayout />}>

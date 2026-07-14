@@ -26,8 +26,8 @@ export default function AdminLogin() {
         return;
       }
 
-      // Automatically redirect to admin dashboard without strict role error for now
-      navigate('/admin/dashboard');
+      // Automatically redirect to admin verify step
+      navigate('/admin/verify');
     } catch (err) {
       setAuthError('An unexpected error occurred. Please try again.');
     } finally {

@@ -2,7 +2,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function AdminProtectedRoute() {
-  const { isLoaded, isSignedIn, role } = useAuth();
+  const { isLoaded, isSignedIn, role, isSecretVerified } = useAuth();
 
   if (!isLoaded) {
     return (
@@ -16,10 +16,15 @@ export default function AdminProtectedRoute() {
     return <Navigate to="/admin/login" replace />;
   }
 
-  // Bypass role restriction temporarily so any signed in user can see the dashboard
-  // if (role !== 'admin' && role !== 'super_admin') {
-  //   return <Navigate to="/admin/forbidden" replace />;
-  // }
+  // Require the Secret Key to have been verified in this session
+  if (!isSecretVerified) {
+    return <Navigate to="/admin/verify" replace />;
+  }
+
+  // Restore strict role check as requested
+  if (role !== 'admin' && role !== 'super_admin') {
+    return <Navigate to="/admin/forbidden" replace />;
+  }
 
   return <Outlet />;
 }
