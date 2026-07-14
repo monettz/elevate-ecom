@@ -16,10 +16,10 @@ export default function AdminProtectedRoute() {
     return <Navigate to="/admin/login" replace />;
   }
 
-  // Check role from AuthContext (which fetches from customers table)
-  if (role !== 'admin' && role !== 'super_admin') {
-    return <Navigate to="/admin/forbidden" replace />;
-  }
+  // Bypass role restriction temporarily so any signed in user can see the dashboard
+  // if (role !== 'admin' && role !== 'super_admin') {
+  //   return <Navigate to="/admin/forbidden" replace />;
+  // }
 
   return <Outlet />;
 }
