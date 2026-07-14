@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, Heart, User, Menu, X, Globe, ChevronDown, Phone } from 'lucide-react';
+import { Search, ShoppingCart, Heart, User, Menu, X, Globe, ChevronDown, Phone, Home, Store, Tag, HelpCircle, Package, LogOut } from 'lucide-react';
 import { useCartStore, useWishlistStore } from '../../store/useStore';
 import { useDataStore } from '../../store/useDataStore';
 import { Logo } from '../ui/Logo';
@@ -16,7 +16,7 @@ export default function Navbar() {
   const cartCount = useCartStore((state) => state.cart.reduce((total, item) => total + item.quantity, 0));
   const wishlistCount = useWishlistStore((state) => state.wishlist.length);
   const { categories, products } = useDataStore();
-  const { user, isSignedIn } = useAuth();
+  const { user, isSignedIn, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -244,51 +244,102 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* Mobile Menu Dropdown */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white px-4 py-4 space-y-4 shadow-inner absolute w-full left-0 z-50">
-          {user ? (
-            <Link to="/profile" className="flex items-center space-x-3 text-gray-700 font-medium pb-4 border-b border-gray-100" onClick={() => setIsMobileMenuOpen(false)}>
-              <div className="w-10 h-10 bg-primary text-white rounded-full overflow-hidden flex items-center justify-center text-lg font-bold shadow-sm">
-                {user?.user_metadata?.avatar_url ? <img src={user.user_metadata.avatar_url} alt="Profile" /> : (user?.user_metadata?.first_name ? user.user_metadata.first_name.charAt(0) : 'U')}
-              </div>
-              <div>
-                <div className="font-bold text-gray-900">{user?.user_metadata?.first_name} {user?.user_metadata?.last_name}</div>
-                <div className="text-xs text-gray-500">View Profile</div>
-              </div>
-            </Link>
-          ) : (
-            <Link to="/login" className="flex items-center space-x-2 text-gray-700 font-medium pb-4 border-b border-gray-100" onClick={() => setIsMobileMenuOpen(false)}>
-              <User size={20} />
-              <span>Sign In / Register</span>
-            </Link>
-          )}
-          
-          <div className="space-y-3 pt-2">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Navigation</h3>
-            <ul className="space-y-3 mb-4 border-b border-gray-100 pb-4">
-              <li><Link to="/" className="block text-gray-900 font-bold hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>Home</Link></li>
-              <li><Link to="/shop" className="block text-gray-900 font-bold hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>Shop All</Link></li>
-            </ul>
+      {/* Mobile Menu Drawer */}
+      <div 
+        className={`md:hidden fixed inset-0 z-[200] transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+      >
+        {/* Backdrop */}
+        <div 
+          className="absolute inset-0 bg-black/50" 
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+        
+        {/* Drawer Panel */}
+        <div 
+          className={`absolute top-0 left-0 w-[85%] max-w-[340px] h-full bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-in-out transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        >
+          {/* Header */}
+          <div className="bg-primary pt-12 pb-8 px-6 relative overflow-hidden flex-shrink-0 rounded-br-[2.5rem]">
+            <button 
+              className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors p-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <X size={24} />
+            </button>
             
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Categories</h3>
-            <ul className="space-y-3">
-              {categories?.map(cat => (
-                <li key={cat.id}>
-                  <Link to={`/shop?category=${encodeURIComponent(cat.name)}`} className="block text-gray-700 hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>
-                    {cat.name}
-                  </Link>
-                </li>
+            {user ? (
+              <div className="flex flex-col items-start text-white">
+                <div className="w-16 h-16 bg-white text-primary rounded-full overflow-hidden flex items-center justify-center text-xl font-bold shadow-md mb-3 border-2 border-white/20">
+                  {user?.user_metadata?.avatar_url ? <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" /> : (user?.user_metadata?.first_name ? user.user_metadata.first_name.charAt(0) : 'U')}
+                </div>
+                <div className="font-bold text-xl truncate w-full">{user?.user_metadata?.first_name} {user?.user_metadata?.last_name}</div>
+                <div className="text-white/80 text-sm mt-0.5 truncate w-full">{user?.email}</div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-start text-white">
+                <div className="w-16 h-16 bg-white/20 text-white rounded-full overflow-hidden flex items-center justify-center shadow-inner mb-3">
+                  <User size={32} />
+                </div>
+                <div className="font-bold text-xl">Guest User</div>
+                <div className="text-white/80 text-sm mt-0.5">Sign in for a better experience</div>
+              </div>
+            )}
+          </div>
+
+          {/* Menu Items */}
+          <div className="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar bg-white">
+            <div className="space-y-1 mb-6">
+              <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-3 mb-3">Navigation</h3>
+              <Link to="/" className="flex items-center gap-4 px-3 py-3 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                <Home size={20} className="text-gray-400" /> Home
+              </Link>
+              <Link to="/shop" className="flex items-center gap-4 px-3 py-3 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                <Store size={20} className="text-gray-400" /> Shop All
+              </Link>
+            </div>
+            
+            <div className="space-y-1 mb-6">
+              <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-3 mb-3">Categories</h3>
+              {categories?.slice(0, 6).map(cat => (
+                <Link key={cat.id} to={`/shop?category=${encodeURIComponent(cat.name)}`} className="flex items-center gap-4 px-3 py-3 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Tag size={20} className="text-gray-400" /> <span className="truncate">{cat.name}</span>
+                </Link>
               ))}
-            </ul>
+            </div>
+
+            <div className="space-y-1">
+              <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-3 mb-3">Profile & Help</h3>
+              {user ? (
+                <Link to="/profile" className="flex items-center gap-4 px-3 py-3 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  <User size={20} className="text-gray-400" /> My Account
+                </Link>
+              ) : (
+                <Link to="/login" className="flex items-center gap-4 px-3 py-3 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  <User size={20} className="text-gray-400" /> Sign In / Register
+                </Link>
+              )}
+              <Link to="/order-tracking" className="flex items-center gap-4 px-3 py-3 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                <Package size={20} className="text-gray-400" /> Track Order
+              </Link>
+              <Link to="/contact" className="flex items-center gap-4 px-3 py-3 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                <HelpCircle size={20} className="text-gray-400" /> Support
+              </Link>
+            </div>
           </div>
           
-          <div className="pt-4 border-t border-gray-100 space-y-3">
-            <Link to="/contact" className="block text-sm text-gray-600 hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>Support</Link>
-            <Link to="/order-tracking" className="block text-sm text-gray-600 hover:text-primary" onClick={() => setIsMobileMenuOpen(false)}>Track Order</Link>
-          </div>
+          {/* Footer Actions */}
+          {user && (
+            <div className="p-4 border-t border-gray-100 bg-gray-50 flex-shrink-0">
+              <button 
+                onClick={() => { signOut(); setIsMobileMenuOpen(false); navigate('/'); }} 
+                className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl text-red-500 font-semibold hover:bg-red-50 transition-colors"
+              >
+                <LogOut size={18} /> Sign Out
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </header>
     </>
   );
