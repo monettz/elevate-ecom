@@ -16,22 +16,24 @@ export default function Home() {
         <Hero />
       </div>
 
-      <PopularCategories />
+      <div className="space-y-6">
+        <PopularCategories />
 
-      {/* Today's Best Deals */}
-      <section>
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-heading font-bold text-gray-900">Today's Best Deals For You!</h2>
-          <Link to="/shop" className="text-sm font-medium text-primary hover:underline">
-            View All &gt;
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {deals.map(product => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
+        {/* Today's Best Deals */}
+        <section>
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl font-heading font-bold text-gray-900">Today's Best Deals For You!</h2>
+            <Link to="/shop" className="text-sm font-medium text-primary hover:underline">
+              View All &gt;
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {deals.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      </div>
 
       {/* Promotional Banners */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">

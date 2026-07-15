@@ -7,6 +7,7 @@ import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
 import Shop from './pages/Shop';
+import Categories from './pages/Categories';
 import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -79,7 +80,7 @@ function App() {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="shop" element={<Shop />} />
-          <Route path="categories" element={<Shop />} />
+          <Route path="categories" element={<Categories />} />
           <Route path="product/:id" element={<ProductDetails />} />
           <Route path="cart" element={<Cart />} />
           <Route path="wishlist" element={<Wishlist />} />
