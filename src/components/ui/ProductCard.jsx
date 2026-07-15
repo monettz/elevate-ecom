@@ -76,21 +76,6 @@ export default function ProductCard({ product }) {
           <h3 className="font-semibold text-gray-900 line-clamp-2 text-sm leading-tight mb-1">
             {product.name}
           </h3>
-          
-          <div className="flex items-center gap-1 mb-1.5">
-            <div className="flex text-yellow-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={11} fill={i < Math.floor(product.rating || 0) ? "currentColor" : "none"} />
-              ))}
-            </div>
-            <span className="text-[10px] text-gray-500 font-medium">({product.reviews || 0})</span>
-          </div>
-          
-          {product.description && (
-            <p className="text-[11px] text-gray-500 line-clamp-1 mb-1">
-              {product.description}
-            </p>
-          )}
 
           {/* Spacer to push price down */}
           <div className="flex-grow"></div>

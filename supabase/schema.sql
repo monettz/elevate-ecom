@@ -195,3 +195,15 @@ CREATE POLICY "Public read access for categories" ON public.categories FOR SELEC
 CREATE POLICY "Public read access for brands" ON public.brands FOR SELECT USING (true);
 CREATE POLICY "Public read access for product images" ON public.product_images FOR SELECT USING (true);
 CREATE POLICY "Public read access for homepage banners" ON public.homepage_banners FOR SELECT USING (true);
+
+-- Admin verification RPC
+CREATE OR REPLACE FUNCTION verify_admin_secret(input_secret text)
+RETURNS boolean
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  -- Validate against the provided secret key
+  RETURN input_secret = 'MONET-ADMIN-2026';
+END;
+$$;

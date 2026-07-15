@@ -126,3 +126,15 @@ CREATE POLICY "Allow public read/write orders" ON public.orders FOR ALL USING (t
 CREATE POLICY "Allow public read/write order_items" ON public.order_items FOR ALL USING (true);
 CREATE POLICY "Allow public read/write coupons" ON public.coupons FOR ALL USING (true);
 CREATE POLICY "Allow public read/write flash_sales" ON public.flash_sales FOR ALL USING (true);
+
+-- 10. Admin Verification
+CREATE OR REPLACE FUNCTION verify_admin_secret(input_secret text)
+RETURNS boolean
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  -- Validate against the provided secret key
+  RETURN input_secret = 'MONET-ADMIN-2026';
+END;
+$$;
