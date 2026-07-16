@@ -8,6 +8,7 @@ export default function Shop() {
   const [searchParams] = useSearchParams();
   const initialCategory = searchParams.get('category');
   const searchQuery = searchParams.get('query');
+  const filterParam = searchParams.get('filter');
   
   const { products, categories, brands } = useDataStore();
 
@@ -19,6 +20,7 @@ export default function Shop() {
   const filteredProducts = products.filter(p => {
     let matchesCategory = true;
     let matchesQuery = true;
+    let matchesFilter = true;
 
     if (selectedCategory !== 'All') {
       matchesCategory = p.category.toLowerCase() === selectedCategory.toLowerCase() || p.category === selectedCategory;
@@ -31,7 +33,13 @@ export default function Shop() {
                      (p.category && p.category.toLowerCase().includes(q));
     }
 
-    return matchesCategory && matchesQuery;
+    if (filterParam === 'deals') {
+      matchesFilter = p.is_best_deal;
+    } else if (filterParam === 'trending') {
+      matchesFilter = p.is_trending;
+    }
+
+    return matchesCategory && matchesQuery && matchesFilter;
   });
 
   return (

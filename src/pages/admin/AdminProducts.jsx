@@ -72,10 +72,20 @@ export default function AdminProducts() {
 
   const handleFormChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({ 
-      ...prev, 
-      [name]: type === 'checkbox' ? checked : value 
-    }));
+    
+    setFormData(prev => {
+      const newData = { ...prev, [name]: type === 'checkbox' ? checked : value };
+      
+      // Mutually exclusive placements
+      if (name === 'isBestDeal' && checked) {
+        newData.isTrending = false;
+      }
+      if (name === 'isTrending' && checked) {
+        newData.isBestDeal = false;
+      }
+      
+      return newData;
+    });
   };
 
   const handleImageUpload = (e) => {
