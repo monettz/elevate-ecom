@@ -1,10 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
-// IMPORTANT: Change this to your actual admin email!
-const ADMIN_EMAIL = 'admin@yourstore.com'; 
+// Set to actual admin email
+const ADMIN_EMAIL = 'monettz47@gmail.com'; 
 
-serve(async (req) => {
+serve(async (req: Request) => {
   try {
     const payload = await req.json();
 
@@ -28,7 +28,6 @@ serve(async (req) => {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        // IMPORTANT: The 'from' email MUST be verified in your Resend dashboard
         from: 'Elevate Store <orders@elevatestore.com>', 
         to: [order.customer_email],
         subject: `Order Confirmation - ${order.id}`,
@@ -83,7 +82,7 @@ serve(async (req) => {
       headers: { 'Content-Type': 'application/json' },
       status: 200,
     });
-  } catch (error) {
+  } catch (error: any) {
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { 'Content-Type': 'application/json' },
       status: 400,
