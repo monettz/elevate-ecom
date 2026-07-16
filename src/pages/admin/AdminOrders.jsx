@@ -190,7 +190,7 @@ export default function AdminOrders() {
                     <td className="px-6 py-4 font-medium text-primary hover:underline">{order.id}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <img src={order.customer_avatar || 'https://i.pravatar.cc/150'} alt={order.customer_name} className="w-8 h-8 rounded-full border border-gray-200" />
+                        <img src={(order.customer_avatar && !order.customer_avatar.includes('pravatar')) ? order.customer_avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(order.customer_name || 'U')}&background=random`} alt={order.customer_name} className="w-8 h-8 rounded-full border border-gray-200" />
                         <div>
                           <div className="font-medium text-gray-900">{order.customer_name}</div>
                           <div className="text-xs text-gray-500">{order.customer_email}</div>
@@ -262,7 +262,7 @@ export default function AdminOrders() {
                 <div>
                   <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Customer Information</h4>
                   <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <img src={selectedOrder.customer_avatar || 'https://i.pravatar.cc/150'} alt={selectedOrder.customer_name} className="w-10 h-10 rounded-full border border-gray-200 shadow-sm" />
+                    <img src={(selectedOrder.customer_avatar && !selectedOrder.customer_avatar.includes('pravatar')) ? selectedOrder.customer_avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedOrder.customer_name || 'U')}&background=random`} alt={selectedOrder.customer_name} className="w-10 h-10 rounded-full border border-gray-200 shadow-sm" />
                     <div>
                       <p className="font-medium text-gray-900">{selectedOrder.customer_name}</p>
                       <p className="text-sm text-gray-500">{selectedOrder.customer_email}</p>

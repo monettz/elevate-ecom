@@ -56,7 +56,7 @@ export default function AdminDashboard() {
           <div className="space-y-4">
             {orders.slice(0, 5).map(order => (
               <div key={order.id} className="flex items-center gap-4 py-3 border-b border-gray-100 last:border-0">
-                <img src={order.customer_avatar || 'https://i.pravatar.cc/150'} alt={order.customer_name} className="w-10 h-10 rounded-full border border-gray-200 object-cover" />
+                <img src={(order.customer_avatar && !order.customer_avatar.includes('pravatar')) ? order.customer_avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(order.customer_name || 'U')}&background=random`} alt={order.customer_name} className="w-10 h-10 rounded-full border border-gray-200 object-cover" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-gray-900 truncate">{order.customer_name}</p>
                   <p className="text-xs text-gray-500 truncate">{order.id}</p>

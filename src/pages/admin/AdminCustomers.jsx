@@ -90,7 +90,7 @@ export default function AdminCustomers() {
                   <tr key={customer.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <img src={customer.avatar} alt={customer.name} className="w-10 h-10 rounded-full border border-gray-200" />
+                        <img src={(customer.avatar && !customer.avatar.includes('pravatar')) ? customer.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.name || customer.email || 'U')}&background=random`} alt={customer.name} className="w-10 h-10 rounded-full border border-gray-200" />
                         <div>
                           <div className="font-medium text-gray-900">{customer.name}</div>
                           <div className="text-xs text-gray-500">{customer.email}</div>
@@ -158,7 +158,7 @@ export default function AdminCustomers() {
             
             <div className="p-6">
               <div className="flex items-center gap-4 mb-8">
-                <img src={selectedCustomer.avatar} alt={selectedCustomer.name} className="w-20 h-20 rounded-full border-4 border-gray-50 shadow-sm" />
+                <img src={(selectedCustomer.avatar && !selectedCustomer.avatar.includes('pravatar')) ? selectedCustomer.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedCustomer.name || selectedCustomer.email || 'U')}&background=random`} alt={selectedCustomer.name} className="w-20 h-20 rounded-full border-4 border-gray-50 shadow-sm" />
                 <div>
                   <h4 className="text-2xl font-bold text-gray-900">{selectedCustomer.name}</h4>
                   <p className="text-gray-500">{selectedCustomer.email}</p>
