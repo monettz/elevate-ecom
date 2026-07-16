@@ -79,10 +79,13 @@ export const useDataStore = create((set, get) => ({
     
     supabase.channel('custom-all-channel')
       .on('postgres_changes', { event: '*', schema: 'public' }, (payload) => {
-        console.log('Change received!', payload);
-        // Refresh all data dynamically when any public table changes
+        // Refresh public storefront data dynamically
         get().fetchAllData();
-        get().fetchAdminData();
+        
+        // Only refresh massive admin data if it has already been requested (i.e. user is an Admin)
+        if (get().customers.length > 0 || get().orders.length > 0) {
+          get().fetchAdminData();
+        }
       })
       .subscribe();
   }

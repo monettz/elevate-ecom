@@ -8,4 +8,24 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom') || id.includes('framer-motion') || id.includes('zustand')) {
+              return 'vendor';
+            }
+            if (id.includes('lucide-react') || id.includes('react-hot-toast')) {
+              return 'ui';
+            }
+            if (id.includes('@supabase')) {
+              return 'supabase';
+            }
+          }
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000,
+  }
 })

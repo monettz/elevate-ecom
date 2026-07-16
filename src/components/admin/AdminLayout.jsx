@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useDataStore } from '../../store/useDataStore';
 import { 
   LayoutDashboard, 
   Package, 
@@ -38,6 +39,11 @@ export default function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
+  const { fetchAdminData } = useDataStore();
+
+  useEffect(() => {
+    fetchAdminData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
