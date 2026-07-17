@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import Hero from '../components/home/Hero';
 import PopularCategories from '../components/home/PopularCategories';
 import ProductCard from '../components/ui/ProductCard';
@@ -7,8 +8,40 @@ import { useDataStore } from '../store/useDataStore';
 export default function Home() {
   const { products, banners: promotionalBanners, brands } = useDataStore();
 
-  const deals = products.filter(p => p.is_best_deal).slice(0, 8);
-  const featured = products.filter(p => p.is_trending).slice(0, 8);
+  const { deals, featured } = useMemo(() => {
+    if (!products || products.length === 0) return { deals: [], featured: [] };
+
+    // Function to reliably shuffle an array
+    const shuffle = (array) => {
+      const newArray = [...array];
+      for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+      }
+      return newArray;
+    };
+
+    // Prepare Today's Best Deals
+    const allDeals = products.filter(p => p.is_best_deal);
+    const shuffledDeals = shuffle(allDeals);
+    const selectedDeals = shuffledDeals.slice(0, 8);
+
+    // Track what is already displayed to reduce duplication
+    const dealIds = new Set(selectedDeals.map(p => p.id));
+
+    // Prepare Trending (Featured) Products
+    const allTrending = products.filter(p => p.is_trending);
+    
+    // Group trending into higher priority (not in deals) and lower priority (already in deals)
+    const trendingNotInDeals = shuffle(allTrending.filter(p => !dealIds.has(p.id)));
+    const trendingInDeals = shuffle(allTrending.filter(p => dealIds.has(p.id)));
+
+    // Combine them, placing fresh/unique products first, then fill remaining slots
+    const prioritizedTrending = [...trendingNotInDeals, ...trendingInDeals];
+    const selectedFeatured = prioritizedTrending.slice(0, 8);
+
+    return { deals: selectedDeals, featured: selectedFeatured };
+  }, [products]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-16">
