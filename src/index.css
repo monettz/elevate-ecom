@@ -18,6 +18,13 @@
     background-color: var(--color-app-bg);
     color: var(--color-text-main);
     overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+  
+  #root {
+    overflow-x: hidden;
+    width: 100%;
     max-width: 100vw;
   }
   
