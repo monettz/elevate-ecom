@@ -65,6 +65,8 @@ export default function Checkout() {
         discount_amount: appliedCoupon ? discount : 0
       };
       
+      let finalCustomerId = isSignedIn ? user.id : null;
+      
       // Ensure customer exists in customers table if signed in
       if (isSignedIn) {
         const { data: existingCustomer } = await supabase
@@ -74,14 +76,31 @@ export default function Checkout() {
           .single();
           
         if (!existingCustomer) {
-          await supabase.from('customers').insert({
-            id: user.id,
-            email: user.email,
-            name: orderData.customer_name.trim(),
-            role: 'user'
-          });
+          // Fallback: check if the email already exists under a different ID
+          const { data: customerByEmail } = await supabase
+            .from('customers')
+            .select('id')
+            .eq('email', user.email)
+            .single();
+            
+          if (customerByEmail) {
+            finalCustomerId = customerByEmail.id;
+          } else {
+            const { error: insertError } = await supabase.from('customers').insert({
+              id: user.id,
+              email: user.email,
+              name: orderData.customer_name.trim(),
+              role: 'user'
+            });
+            if (insertError) {
+              console.error("Failed to sync customer profile:", insertError);
+              throw new Error("Could not sync customer profile.");
+            }
+          }
         }
       }
+
+      orderData.customer_id = finalCustomerId;
 
       
       const { error: orderError } = await supabase.from('orders').insert(orderData);
@@ -105,7 +124,7 @@ export default function Checkout() {
       }, 500);
     } catch (error) {
       console.error('Error placing order:', error);
-      alert(`There was an error placing your order: ${error.message || JSON.stringify(error)}`);
+      alert('We could not place your order due to an unexpected error. Please try again or contact support.');
     } finally {
       setIsSubmitting(false);
     }
