@@ -65,6 +65,25 @@ export default function Checkout() {
         discount_amount: appliedCoupon ? discount : 0
       };
       
+      // Ensure customer exists in customers table if signed in
+      if (isSignedIn) {
+        const { data: existingCustomer } = await supabase
+          .from('customers')
+          .select('id')
+          .eq('id', user.id)
+          .single();
+          
+        if (!existingCustomer) {
+          await supabase.from('customers').insert({
+            id: user.id,
+            email: user.email,
+            name: orderData.customer_name.trim(),
+            role: 'user'
+          });
+        }
+      }
+
+      
       const { error: orderError } = await supabase.from('orders').insert(orderData);
       if (orderError) throw orderError;
 
@@ -86,7 +105,7 @@ export default function Checkout() {
       }, 500);
     } catch (error) {
       console.error('Error placing order:', error);
-      alert('There was an error placing your order. Please try again.');
+      alert(`There was an error placing your order: ${error.message || JSON.stringify(error)}`);
     } finally {
       setIsSubmitting(false);
     }
