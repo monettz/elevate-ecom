@@ -72,7 +72,7 @@ export default function Profile() {
         const { data, error } = await supabase
           .from('orders')
           .select(`*, order_items(*)`)
-          .eq('customer_id', user.id)
+          .eq('customer_email', user.email)
           .order('date', { ascending: false });
           
         if (!error && data) {
