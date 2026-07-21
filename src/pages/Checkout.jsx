@@ -60,7 +60,7 @@ export default function Checkout() {
         customer_avatar: isSignedIn ? user.user_metadata?.avatar_url : null,
         total,
         status: 'Processing',
-        address: `${formData.get('address')}, ${formData.get('city')}, ${formData.get('postalCode')}`,
+        address: `${formData.get('address')}, Phone: ${formData.get('phone')}`,
         coupon_code: appliedCoupon ? appliedCoupon.code : null,
         discount_amount: appliedCoupon ? discount : 0
       };
@@ -179,14 +179,6 @@ export default function Checkout() {
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
                   <input name="address" required type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                  <input name="city" required type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
-                  <input name="postalCode" required type="text" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary" />
                 </div>
                 <div className="col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
